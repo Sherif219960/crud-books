@@ -15,6 +15,9 @@ export const Addform = () => {
         e.preventDefault()
         const data = { title: title.current.value, price: price.current.value, description: description.current.value }
         dispatch(insertBooks(data))
+        title.current.value = ''
+        price.current.value = ''
+        description.current.value = ''
     }
 
     return (
