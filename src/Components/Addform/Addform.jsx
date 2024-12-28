@@ -1,16 +1,32 @@
+import { useDispatch } from "react-redux"
+import { insertBooks } from "../../store/bookSlice"
+import { useRef } from "react"
 
 
 export const Addform = () => {
+    // ref
+    const title = useRef(null)
+    const price = useRef(null)
+    const description = useRef(null)
+
+    const dispatch = useDispatch()
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        dispatch(insertBooks({ title: title.current.value, price: price.current.value, description: description.current.value }))
+    }
+
     return (
         <div className="container mt-5">
             <h1 className="mb-4">insert book</h1>
-            <form >
+            <form onSubmit={handleSubmit} >
                 <div className="mb-3">
                     <label htmlFor="title" className="form-label">Title</label>
                     <input
                         type="text"
                         className="form-control"
                         id="title"
+                        ref={title}
                     />
                 </div>
                 <div className="mb-3">
@@ -19,6 +35,7 @@ export const Addform = () => {
                         type="text"
                         className="form-control"
                         id="price"
+                        ref={price}
 
                     />
                 </div>
@@ -28,7 +45,7 @@ export const Addform = () => {
                         className="form-control"
                         id="description"
                         rows="3"
-
+                        ref={description}
                     ></textarea>
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
