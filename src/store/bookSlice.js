@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { asyncThunkCreator, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 
 export const getBooks = createAsyncThunk('book/getBooks', async (_, thunkApi) => {
     const { rejectWithValue } = thunkApi
@@ -13,8 +13,10 @@ export const getBooks = createAsyncThunk('book/getBooks', async (_, thunkApi) =>
 
 
 export const insertBooks = createAsyncThunk('book/insertBooks', async (data, thunkApi) => {
-    const { rejectWithValue } = thunkApi
+    const { rejectWithValue, getState } = thunkApi
+
     try {
+        data.userName = getState().author.name
         const response = await fetch('http://localhost:4004/books', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
         const result = await response.json()
         return result
@@ -24,16 +26,23 @@ export const insertBooks = createAsyncThunk('book/insertBooks', async (data, thu
 
 })
 
-export const getSpecificBook = createAsyncThunk('books/getSpecificBook', async (id, thunkApi) => {
+export const deleteBook = createAsyncThunk('book/deleteBook', async (ID, thunkApi) => {
     const { rejectWithValue } = thunkApi
     try {
-        const response = await fetch(`http://localhost:4004/books${id}`)
-        const data = await response.json()
-        return data
-    } catch (error) {
-        return rejectWithValue(error.message)
+        await fetch(`http://localhost:4004/books/${ID}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        console.log(ID)
+        return ID
 
+    } catch (error) {
+
+        return rejectWithValue(error.message)
     }
+
 })
 
 const bookSlice = createSlice({
@@ -41,6 +50,7 @@ const bookSlice = createSlice({
     initialState: { books: [], isLoading: false, error: null },
     reducers: {},
     extraReducers: (builder) => {
+        // show bookList 
         builder.addCase(getBooks.pending, (state,) => {
             state.isLoading = true
         })
@@ -54,8 +64,10 @@ const bookSlice = createSlice({
                 state.error = action.payload
 
             })
+
+            // insert book
             .addCase(insertBooks.pending, (state) => { state.isLoading = true })
-            
+
             .addCase(insertBooks.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.books.push(action.payload)
@@ -64,18 +76,18 @@ const bookSlice = createSlice({
                 state.isLoading = false
                 state.error = action.payload
             })
-            .addCase(getSpecificBook.pending, (state) => {
-                state.isLoading = true
-            })
-            .addCase(getSpecificBook.fulfilled, (state, action) => {
-                state.isLoading = false
-                state.books = action.payload
 
+            // delete book
+            .addCase(deleteBook.pending, (state) => { state.isLoading = true })
+
+            .addCase(deleteBook.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.books = state.books.filter(item => item.id !== action.payload)
+                console.log(state.books)
             })
-            .addCase(getSpecificBook.rejected, (state, action) => {
+            .addCase(deleteBook.rejected, (state, action) => {
                 state.isLoading = false
                 state.error = action.payload
-
             })
 
     }

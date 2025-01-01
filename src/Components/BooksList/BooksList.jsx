@@ -1,10 +1,9 @@
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { Loading } from "../Loading/Loading"
-import { getSpecificBook } from "../../store/bookSlice"
+// import { getSpecificBook } from "../../store/bookSlice"
 
 
-export const BooksList = ({ isLoading, books }) => {
-    const dispatch = useDispatch()
+export const BooksList = ({ isLoading, books, dispatch, deleteBook }) => {
 
     const { isLogedIn } = useSelector(state => state.author)
 
@@ -16,7 +15,7 @@ export const BooksList = ({ isLoading, books }) => {
                 <div>{item.description}</div>
                 <div className="btn-group gap-2">
                     <button className="btn btn-primary" >Read</button>
-                    <button className="btn btn-danger" disabled={!isLogedIn}>Delete</button>
+                    <button className="btn btn-danger" disabled={!isLogedIn} onClick={() => dispatch(deleteBook(item.id))} >Delete</button>
                 </div>
             </li>
         </div>

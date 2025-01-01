@@ -9,7 +9,6 @@ export const Addform = () => {
     const price = useRef(null)
     const description = useRef(null)
     const { isLogedIn } = useSelector(state => state.author)
-    console.log(isLogedIn)
     const dispatch = useDispatch()
 
     const handleSubmit = (e) => {
