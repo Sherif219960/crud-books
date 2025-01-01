@@ -26,17 +26,16 @@ export const insertBooks = createAsyncThunk('book/insertBooks', async (data, thu
 
 })
 
-export const deleteBook = createAsyncThunk('book/deleteBook', async (ID, thunkApi) => {
+export const deleteBook = createAsyncThunk('book/deleteBook', async (item, thunkApi) => {
     const { rejectWithValue } = thunkApi
     try {
-        await fetch(`http://localhost:4004/books/${ID}`, {
+        await fetch(`http://localhost:4004/books/${item.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
         });
-        console.log(ID)
-        return ID
+        return item
 
     } catch (error) {
 
@@ -82,7 +81,7 @@ const bookSlice = createSlice({
 
             .addCase(deleteBook.fulfilled, (state, action) => {
                 state.isLoading = false
-                state.books = state.books.filter(item => item.id !== action.payload)
+                state.books = state.books.filter(item => item.id !== action.payload.id)
                 console.log(state.books)
             })
             .addCase(deleteBook.rejected, (state, action) => {

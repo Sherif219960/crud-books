@@ -3,7 +3,7 @@ import { Loading } from "../Loading/Loading"
 // import { getSpecificBook } from "../../store/bookSlice"
 
 
-export const BooksList = ({ isLoading, books, dispatch, deleteBook }) => {
+export const BooksList = ({ isLoading, books, dispatch, deleteBook, getBookId }) => {
 
     const { isLogedIn } = useSelector(state => state.author)
 
@@ -14,8 +14,18 @@ export const BooksList = ({ isLoading, books, dispatch, deleteBook }) => {
                 <div>{item.price}</div>
                 <div>{item.description}</div>
                 <div className="btn-group gap-2">
-                    <button className="btn btn-primary" >Read</button>
-                    <button className="btn btn-danger" disabled={!isLogedIn} onClick={() => dispatch(deleteBook(item.id))} >Delete</button>
+                    <button className="btn btn-primary" onClick={() => getBookId(item.id)} >Read</button>
+                    <button className="btn btn-danger" disabled={!isLogedIn} onClick={() => dispatch(deleteBook(item))
+                        .unwrap()
+                        .then((originalPromiseResult) => {
+                            // handle result here
+                            console.log(originalPromiseResult)
+                        })
+                        .catch((rejectedValueOrSerializedError) => {
+                            // handle error here
+                            console.log(rejectedValueOrSerializedError)
+                        })
+                    } >Delete</button>
                 </div>
             </li>
         </div>
