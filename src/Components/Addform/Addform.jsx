@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { insertBooks } from "../../store/bookSlice"
 import { useRef } from "react"
 
@@ -8,7 +8,8 @@ export const Addform = () => {
     const title = useRef(null)
     const price = useRef(null)
     const description = useRef(null)
-
+    const { isLogedIn } = useSelector(state => state.author)
+    console.log(isLogedIn)
     const dispatch = useDispatch()
 
     const handleSubmit = (e) => {
@@ -52,7 +53,7 @@ export const Addform = () => {
                         ref={description}
                     ></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-primary" disabled={!isLogedIn}>Submit</button>
             </form>
         </div>
     )
